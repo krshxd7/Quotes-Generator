@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #quote {
+      font-style: italic;
+      margin: 20px 0 10px;
+    }
+
+    #author {
+      color: gray;
+    }
+
+    #copied {
+      color: green;
+      font-size: 0.9em;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Quote Generator</h2>
+    <p id="quote">Click the button to get a quote.</p>
+    <p id="author">- Author</p>
+
+    <button onclick="generateAPIQuote()">Get New Quote</button>
+    <button onclick="copyQuote()">Copy Quote</button>
+    <p id="copied">Copied to clipboard!</p>
+  </div>
+
+  <script>
+    async function generateAPIQuote() {
+      try {
+        const response = await fetch("https://api.quotable.io/random");
+        const data = await response.json();
+        document.getElementById('quote').textContent = `"${data.content}"`;
+        document.getElementById('author').textContent = `- ${data.author}`;
+        document.getElementById('copied').style.display = "none";
+      } catch (error) {
+        document.getElementById('quote').textContent = "Couldn't fetch quote.";
+        document.getElementById('author').textContent = "- Error";
+      }
+    }
+
+    function copyQuote() {
+      const quote = document.getElementById('quote').textContent;
+      const author = document.getElementById('author').textContent;
+      const fullText = `${quote} ${author}`;
+
+      navigator.clipboard.writeText(fullText)
+        .then(() => {
+          document.getElementById('copied').style.display = "block";
+          setTimeout(() => {
+            document.getElementById('copied').style.display = "none";
+          }, 2000);
+        });
+    }
+  </script>
+
+</body>
+</html>
